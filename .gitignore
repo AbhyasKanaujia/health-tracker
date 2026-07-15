@@ -36,3 +36,5 @@ build/
 BOOT-INF/
 data/
 .env
+.playwright-cli/
+.claude/

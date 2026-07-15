@@ -1,5 +1,0 @@
-[      80ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
-[     385ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://ideapad.tail00f43.ts.net:3003/api/users:0
-[     413ms] TypeError: Failed to fetch
-    at initUsers (http://ideapad.tail00f43.ts.net:3003/app.js:10:21)
-    at http://ideapad.tail00f43.ts.net:3003/app.js:467:1
