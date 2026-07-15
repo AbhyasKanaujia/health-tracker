@@ -1,0 +1,64 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - link "◈ Home" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e5]: ◈
+      - generic [ref=e6]: Home
+    - link "✎ Log" [ref=e7] [cursor=pointer]:
+      - /url: /log
+      - generic [ref=e8]: ✎
+      - generic [ref=e9]: Log
+    - link "⊞ History" [ref=e10] [cursor=pointer]:
+      - /url: /history
+      - generic [ref=e11]: ⊞
+      - generic [ref=e12]: History
+    - link "◎ Insights" [ref=e13] [cursor=pointer]:
+      - /url: /insights
+      - generic [ref=e14]: ◎
+      - generic [ref=e15]: Insights
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - heading "Today" [level=1] [ref=e18]
+      - paragraph [ref=e19]: 2026-07-15
+    - generic [ref=e20]:
+      - generic [ref=e21]: ○
+      - generic [ref=e22]: Not logged yet
+      - link "Log Now" [ref=e23] [cursor=pointer]:
+        - /url: /log
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: 7-day avg acne
+        - generic [ref=e27]: 5.0/10
+      - generic [ref=e28]:
+        - generic [ref=e29]: Streak
+        - generic [ref=e30]: 0 days
+      - generic [ref=e31]:
+        - 'generic "2026-07-09: 3" [ref=e32]'
+        - 'generic "2026-07-10: 5" [ref=e34]'
+        - 'generic "2026-07-11: 6" [ref=e36]'
+        - 'generic "2026-07-12: 7" [ref=e38]'
+        - 'generic "2026-07-13: 5" [ref=e40]'
+        - 'generic "2026-07-14: 4" [ref=e42]'
+      - paragraph [ref=e44]: last 7 days
+    - generic [ref=e45]:
+      - heading "Last Entry — 2026-07-14" [level=2] [ref=e46]
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - generic [ref=e49]: Acne
+          - generic [ref=e50]: 4/10
+        - generic [ref=e51]:
+          - generic [ref=e52]: Sleep
+          - generic [ref=e53]: 8h
+        - generic [ref=e54]:
+          - generic [ref=e55]: Water
+          - generic [ref=e56]: 3 bottles
+        - generic [ref=e57]:
+          - generic [ref=e58]: Food
+          - generic [ref=e59]: home healthy
+        - generic [ref=e60]:
+          - generic [ref=e61]: Workout
+          - generic [ref=e62]: "No"
+        - generic [ref=e63]:
+          - generic [ref=e64]: Stress
+          - generic [ref=e65]: 5/5
+      - paragraph [ref=e66]: "\"Periods about to start in 2 days. Stressed.\""

@@ -1,0 +1,14 @@
+[    1095ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
+[    1360ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:3003/api/meals/today:0
+[    1361ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:3003/api/hydration/today:0
+[    1522ms] TypeError: Cannot read properties of undefined (reading 'toFixed')
+    at renderTodayMeals (http://localhost:3003/app.js:84:83)
+    at refreshToday (http://localhost:3003/app.js:78:3)
+[    1820ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://localhost:3003/favicon.ico:0
+[   28755ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63
+[   28948ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:3003/api/meals/today:0
+[   28949ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ http://localhost:3003/api/hydration/today:0
+[   29021ms] TypeError: Cannot read properties of undefined (reading 'toFixed')
+    at renderTodayMeals (http://localhost:3003/app.js:84:83)
+    at refreshToday (http://localhost:3003/app.js:78:3)
+[  172858ms] [WARNING] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation @ https://cdn.tailwindcss.com/:63

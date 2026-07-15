@@ -1,0 +1,41 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: Health Tracker
+      - generic [ref=e6]: Monday, July 13
+    - generic [ref=e7]:
+      - button "Today" [ref=e8] [cursor=pointer]
+      - button "History" [ref=e9] [cursor=pointer]
+      - button "Insights" [ref=e10] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: —
+          - generic [ref=e16]: calories
+        - generic [ref=e17]:
+          - generic [ref=e18]: —
+          - generic [ref=e19]: protein (g)
+        - generic [ref=e20]:
+          - generic [ref=e21]: —
+          - generic [ref=e22]: water (L)
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - heading "Meals" [level=2] [ref=e25]
+          - list [ref=e26]:
+            - listitem [ref=e27]: No meals logged today.
+          - generic [ref=e28]:
+            - generic [ref=e29]:
+              - textbox "Food name" [ref=e30]
+              - button "Analyze" [ref=e31] [cursor=pointer]
+            - generic [ref=e32]:
+              - spinbutton [ref=e34]
+              - spinbutton [ref=e36]
+            - button "Log Meal" [ref=e37] [cursor=pointer]
+        - generic [ref=e38]:
+          - heading "Hydration" [level=2] [ref=e39]
+          - list [ref=e40]:
+            - listitem [ref=e41]: No water logged today.
+          - generic [ref=e42]:
+            - spinbutton [ref=e43]
+            - button "Log Water" [ref=e44] [cursor=pointer]

@@ -1,0 +1,116 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: Health Tracker
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - button "Abhyas" [active] [ref=e7] [cursor=pointer]
+          - button "Kavya" [ref=e8] [cursor=pointer]
+        - generic [ref=e9]: Tuesday, July 14
+        - button "Insights" [ref=e10] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: "0"
+          - generic [ref=e16]: calories today
+        - generic [ref=e17]:
+          - generic [ref=e18]: "0.0"
+          - generic [ref=e19]: protein today (g)
+        - generic [ref=e20]:
+          - generic [ref=e21]: "0.0"
+          - generic [ref=e22]: water today (L)
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - textbox "Food name" [ref=e26]
+            - button "Analyze" [ref=e27] [cursor=pointer]
+          - generic [ref=e28]:
+            - spinbutton [ref=e30]
+            - spinbutton [ref=e32]
+          - generic [ref=e33]:
+            - generic [ref=e34]: eaten at
+            - textbox [ref=e35]: 18:10
+          - button "Log Meal" [ref=e36] [cursor=pointer]
+        - generic [ref=e37]:
+          - spinbutton [ref=e38]
+          - generic [ref=e39]:
+            - generic [ref=e40]: had at
+            - textbox [ref=e41]: 18:10
+          - button "Log Water" [ref=e42] [cursor=pointer]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: Meals
+          - list [ref=e47]:
+            - listitem:
+              - generic:
+                - generic: Today
+            - listitem [ref=e250]:
+              - generic [ref=e254]:
+                - generic [ref=e255]:
+                  - generic [ref=e256]: One cup milk, tea with one Katori, soya sticks and other kind of snacks
+                  - generic [ref=e257]: 650 kcal | 22.5g protein
+                - generic [ref=e258]:
+                  - generic [ref=e259]: 07:10 PM
+                  - button "edit" [ref=e260] [cursor=pointer]
+                  - button "delete" [ref=e261] [cursor=pointer]
+            - listitem:
+              - generic: 2h 31m
+            - listitem [ref=e262]:
+              - generic [ref=e266]:
+                - generic [ref=e267]:
+                  - generic [ref=e268]: One small yelakki banana, 200 ML milk, 2 teaspoon peanut butter
+                  - generic [ref=e269]: 350 kcal | 15.5g protein
+                - generic [ref=e270]:
+                  - generic [ref=e271]: 04:39 PM
+                  - button "edit" [ref=e272] [cursor=pointer]
+                  - button "delete" [ref=e273] [cursor=pointer]
+            - listitem [ref=e274]:
+              - generic [ref=e278]:
+                - generic [ref=e279]:
+                  - generic [ref=e280]: "Lunch: two pieces, chicken tikka, two pieces, prawn, three pieces mutton, two pieces, chicken wing, one small, Katori Caesar salad without eggs"
+                  - generic [ref=e281]: 850 kcal | 72.5g protein
+                - generic [ref=e282]:
+                  - generic [ref=e283]: 04:38 PM
+                  - button "edit" [ref=e284] [cursor=pointer]
+                  - button "delete" [ref=e285] [cursor=pointer]
+            - listitem [ref=e286]:
+              - generic [ref=e290]:
+                - generic [ref=e291]:
+                  - generic [ref=e292]: "Breakfast: one small set Dosa, half Paneer Paratha, four boiled eggs, one small Katori watermelon"
+                  - generic [ref=e293]: 740 kcal | 38.5g protein
+                - generic [ref=e294]:
+                  - generic [ref=e295]: 04:36 PM
+                  - button "edit" [ref=e296] [cursor=pointer]
+                  - button "delete" [ref=e297] [cursor=pointer]
+        - generic [ref=e96]:
+          - paragraph [ref=e97]: Hydration
+          - list [ref=e99]:
+            - listitem:
+              - generic:
+                - generic: Today
+            - listitem [ref=e298]:
+              - generic [ref=e301]:
+                - generic [ref=e302]: 0.4L
+                - generic [ref=e303]:
+                  - generic [ref=e304]: 07:25 PM
+                  - button "edit" [ref=e305] [cursor=pointer]
+                  - button "delete" [ref=e306] [cursor=pointer]
+            - listitem:
+              - generic: 1h 41m
+            - listitem [ref=e307]:
+              - generic [ref=e310]:
+                - generic [ref=e311]: 0.5L
+                - generic [ref=e312]:
+                  - generic [ref=e313]: 05:43 PM
+                  - button "edit" [ref=e314] [cursor=pointer]
+                  - button "delete" [ref=e315] [cursor=pointer]
+            - listitem:
+              - generic: 1h 4m
+            - listitem [ref=e316]:
+              - generic [ref=e319]:
+                - generic [ref=e320]: 0.7L
+                - generic [ref=e321]:
+                  - generic [ref=e322]: 04:39 PM
+                  - button "edit" [ref=e323] [cursor=pointer]
+                  - button "delete" [ref=e324] [cursor=pointer]

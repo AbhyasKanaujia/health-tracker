@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+</head>
+<body class="bg-stone-50 text-stone-900 min-h-screen font-sans">
+
+  <!-- Top nav -->
+  <nav class="bg-white border-b border-stone-100 sticky top-0 z-10 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span class="font-semibold text-stone-900 tracking-tight">Health Tracker</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="user-switcher" class="flex gap-1.5"></div>
+        <span id="today-date" class="text-sm text-stone-400 hidden sm:block"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-6 pb-24">
+
+    <!-- ── HOME FEED ──────────────────────────────────────────────────────── -->
+    <div id="panel-feed">
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Calories</div>
+          <div id="stat-calories" class="text-2xl font-bold text-stone-900 leading-none mb-1">—</div>
+          <div class="text-[11px] text-stone-400 mb-3">of 2000 kcal</div>
+          <div class="h-1 bg-stone-100 rounded-full overflow-hidden">
+            <div id="progress-calories" class="h-1 bg-orange-400 rounded-full transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Protein</div>
+          <div id="stat-protein" class="text-2xl font-bold text-stone-900 leading-none mb-1">—</div>
+          <div class="text-[11px] text-stone-400 mb-3">of 100 g</div>
+          <div class="h-1 bg-stone-100 rounded-full overflow-hidden">
+            <div id="progress-protein" class="h-1 bg-violet-400 rounded-full transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Water</div>
+          <div id="stat-water" class="text-2xl font-bold text-stone-900 leading-none mb-1">—</div>
+          <div class="text-[11px] text-stone-400 mb-3">of 2.5 L</div>
+          <div class="h-1 bg-stone-100 rounded-full overflow-hidden">
+            <div id="progress-water" class="h-1 bg-sky-400 rounded-full transition-all duration-500" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log forms -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <form id="meal-form" class="bg-white rounded-2xl p-5 space-y-3 shadow-sm border border-stone-100">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Log a Meal</div>
+          <div class="flex gap-2">
+            <input id="meal-name" type="text" placeholder="Food name"
+              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+            <button type="button" onclick="handleAnalyze()" id="analyze-btn"
+              class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-xs text-stone-600 font-medium rounded-xl transition whitespace-nowrap">
+              Analyze
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="relative">
+              <input id="meal-calories" type="number" placeholder="Calories"
+                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+              <div id="cal-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
+                <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
+              </div>
+            </div>
+            <div class="relative">
+              <input id="meal-protein" type="number" step="0.1" placeholder="Protein (g)"
+                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+              <div id="prot-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
+                <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-stone-400 shrink-0">eaten at</span>
+            <input id="meal-date" type="date"
+              class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+            <input id="meal-time" type="time"
+              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+          </div>
+          <button type="submit"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold py-2.5 rounded-xl transition">
+            Log Meal
+          </button>
+        </form>
+
+        <form id="water-form" class="bg-white rounded-2xl p-5 flex flex-col gap-3 shadow-sm border border-stone-100">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Log Water</div>
+          <input id="water-amount" type="number" step="0.1" placeholder="Amount (litres)"
+            class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-stone-400 shrink-0">had at</span>
+            <input id="water-date" type="date"
+              class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+            <input id="water-time" type="time"
+              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+          </div>
+          <button type="submit"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold py-2.5 rounded-xl transition mt-auto">
+            Log Water
+          </button>
+        </form>
+      </div>
+
+      <!-- Recent timeline (last 10h) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Recent Meals</p>
+          <div class="relative">
+            <div id="meal-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
+            <ul id="meal-feed" class="relative" style="z-index:1"></ul>
+          </div>
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Recent Hydration</p>
+          <div class="relative">
+            <div id="water-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
+            <ul id="water-feed" class="relative" style="z-index:1"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY ──────────────────────────────────────────────────────────── -->
+    <div id="panel-history" class="hidden">
+      <div class="text-sm text-stone-500 mb-6">All past entries, grouped by day.</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Meals</p>
+          <div class="relative">
+            <div id="hist-meal-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
+            <ul id="hist-meal-feed" class="relative" style="z-index:1"></ul>
+          </div>
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Hydration</p>
+          <div class="relative">
+            <div id="hist-water-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
+            <ul id="hist-water-feed" class="relative" style="z-index:1"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INSIGHTS ────────────────────────────────────────────────────────── -->
+    <div id="panel-insights" class="hidden">
+
+      <div class="flex gap-2 mb-8">
+        <button onclick="switchInsightsPeriod(7)" id="insights-btn-7"
+          class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-emerald-600 text-white">
+          7 days
+        </button>
+        <button onclick="switchInsightsPeriod(30)" id="insights-btn-30"
+          class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-stone-100 text-stone-500 hover:bg-stone-200">
+          30 days
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-stone-100">
+          <div id="ins-avg-cal" class="text-2xl font-bold text-orange-500">—</div>
+          <div class="text-xs text-stone-400 mt-1">avg kcal/day</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-stone-100">
+          <div id="ins-avg-prot" class="text-2xl font-bold text-violet-500">—</div>
+          <div class="text-xs text-stone-400 mt-1">avg protein/day</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-stone-100">
+          <div id="ins-avg-water" class="text-2xl font-bold text-sky-500">—</div>
+          <div class="text-xs text-stone-400 mt-1">avg water/day</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 text-center shadow-sm border border-stone-100">
+          <div id="ins-days-logged" class="text-2xl font-bold text-emerald-600">—</div>
+          <div class="text-xs text-stone-400 mt-1">days logged</div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h3 class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-3">Daily Calories</h3>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div id="chart-calories" class="flex items-end gap-1 h-36 overflow-x-auto pb-1"></div>
+          <div id="chart-cal-labels" class="flex gap-1 mt-2 overflow-x-auto"></div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h3 class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-3">Daily Water (L)</h3>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div id="chart-water" class="flex items-end gap-1 h-36 overflow-x-auto pb-1"></div>
+          <div id="chart-water-labels" class="flex gap-1 mt-2 overflow-x-auto"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-100 z-20 shadow-[0_-1px_3px_rgba(0,0,0,0.04)]">
+    <div class="max-w-3xl mx-auto h-16 flex items-center justify-around px-4">
+
+      <button id="nav-home" onclick="showFeed()"
+        class="flex flex-col items-center gap-1 px-6 py-1 transition">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="text-[10px] font-medium">Home</span>
+      </button>
+
+      <button id="nav-history" onclick="showHistory()"
+        class="flex flex-col items-center gap-1 px-6 py-1 transition">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span class="text-[10px] font-medium">History</span>
+      </button>
+
+      <button id="nav-insights" onclick="showInsights()"
+        class="flex flex-col items-center gap-1 px-6 py-1 transition">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <span class="text-[10px] font-medium">Insights</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <script src="app.js?v=11"></script>
+</body>
+</html>

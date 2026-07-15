@@ -1,0 +1,78 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - generic [ref=e8]: Health Tracker
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "A" [ref=e11] [cursor=pointer]
+          - button "K" [ref=e12] [cursor=pointer]
+        - generic [ref=e13]: Wednesday, July 15
+  - main [ref=e14]:
+    - generic [ref=e194]:
+      - generic [ref=e195]:
+        - button "7 days" [ref=e196] [cursor=pointer]
+        - button "30 days" [ref=e197] [cursor=pointer]
+      - generic [ref=e198]:
+        - generic [ref=e199]:
+          - generic [ref=e200]: "1808"
+          - generic [ref=e201]: avg kcal/day
+        - generic [ref=e202]:
+          - generic [ref=e203]: "71.8"
+          - generic [ref=e204]: avg protein/day
+        - generic [ref=e205]:
+          - generic [ref=e206]: "2.3"
+          - generic [ref=e207]: avg water/day
+        - generic [ref=e208]:
+          - generic [ref=e209]: 3/7
+          - generic [ref=e210]: days logged
+      - generic [ref=e211]:
+        - heading "Daily Calories" [level=3] [ref=e212]
+        - generic [ref=e213]:
+          - generic [ref=e214]:
+            - 'generic "7/9: 0" [ref=e215]'
+            - 'generic "7/10: 0" [ref=e217]'
+            - 'generic "7/11: 0" [ref=e219]'
+            - 'generic "7/12: 0" [ref=e221]'
+            - 'generic "7/13: 2462" [ref=e223]'
+            - 'generic "7/14: 1769" [ref=e225]'
+            - 'generic "7/15: 1195" [ref=e227]'
+          - generic [ref=e229]:
+            - generic [ref=e230]: 7/9
+            - generic [ref=e231]: 7/10
+            - generic [ref=e232]: 7/11
+            - generic [ref=e233]: 7/12
+            - generic [ref=e234]: 7/13
+            - generic [ref=e235]: 7/14
+            - generic [ref=e236]: 7/15
+      - generic [ref=e237]:
+        - heading "Daily Water (L)" [level=3] [ref=e238]
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - 'generic "7/9: 0" [ref=e241]'
+            - 'generic "7/10: 0" [ref=e243]'
+            - 'generic "7/11: 0" [ref=e245]'
+            - 'generic "7/12: 0" [ref=e247]'
+            - 'generic "7/13: 3" [ref=e249]'
+            - 'generic "7/14: 3" [ref=e251]'
+            - 'generic "7/15: 1" [ref=e253]'
+          - generic [ref=e255]:
+            - generic [ref=e256]: 7/9
+            - generic [ref=e257]: 7/10
+            - generic [ref=e258]: 7/11
+            - generic [ref=e259]: 7/12
+            - generic [ref=e260]: 7/13
+            - generic [ref=e261]: 7/14
+            - generic [ref=e262]: 7/15
+  - navigation [ref=e179]:
+    - generic [ref=e180]:
+      - button "Home" [ref=e181] [cursor=pointer]:
+        - img [ref=e182]
+        - generic [ref=e185]: Home
+      - button "History" [ref=e186] [cursor=pointer]:
+        - img [ref=e187]
+        - generic [ref=e190]: History
+      - button "Insights" [active] [ref=e191] [cursor=pointer]:
+        - img [ref=e192]
+        - generic [ref=e193]: Insights

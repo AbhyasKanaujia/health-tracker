@@ -1,0 +1,10 @@
+services:
+  health-tracker:
+    build: .
+    container_name: health-tracker
+    network_mode: host
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Kolkata
+    restart: unless-stopped

@@ -1,0 +1,160 @@
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: Health Tracker
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - button "Abhyas" [ref=e7] [cursor=pointer]
+          - button "Kavya" [active] [ref=e8] [cursor=pointer]
+        - generic [ref=e9]: Tuesday, July 14
+        - button "Insights" [ref=e10] [cursor=pointer]
+  - main [ref=e11]:
+    - generic [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]: "95"
+          - generic [ref=e16]: calories today
+        - generic [ref=e17]:
+          - generic [ref=e18]: "0.5"
+          - generic [ref=e19]: protein today (g)
+        - generic [ref=e20]:
+          - generic [ref=e21]: "0.3"
+          - generic [ref=e22]: water today (L)
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - textbox "Food name" [ref=e26]
+            - button "Analyze" [ref=e27] [cursor=pointer]
+          - generic [ref=e28]:
+            - spinbutton [ref=e30]
+            - spinbutton [ref=e32]
+          - generic [ref=e33]:
+            - generic [ref=e34]: eaten at
+            - textbox [ref=e35]: 18:10
+          - button "Log Meal" [ref=e36] [cursor=pointer]
+        - generic [ref=e37]:
+          - spinbutton [ref=e38]
+          - generic [ref=e39]:
+            - generic [ref=e40]: had at
+            - textbox [ref=e41]: 18:10
+          - button "Log Water" [ref=e42] [cursor=pointer]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: Meals
+          - list [ref=e47]:
+            - listitem [ref=e175]:
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - generic [ref=e181]: Apple
+                  - generic [ref=e182]: 95 kcal | 0.5g protein
+                - generic [ref=e183]:
+                  - generic [ref=e184]: 05:58 PM
+                  - button "edit" [ref=e185] [cursor=pointer]
+                  - button "delete" [ref=e186] [cursor=pointer]
+            - listitem:
+              - generic:
+                - generic: Monday, July 13, 2026
+            - listitem [ref=e187]:
+              - generic [ref=e191]:
+                - generic [ref=e192]:
+                  - generic [ref=e193]: 1 cup milk tea, and soya stick snacks
+                  - generic [ref=e194]: 380 kcal | 12.5g protein
+                - generic [ref=e195]:
+                  - generic [ref=e196]: 07:10 PM
+                  - button "edit" [ref=e197] [cursor=pointer]
+                  - button "delete" [ref=e198] [cursor=pointer]
+            - listitem:
+              - generic: 2h 34m
+            - listitem [ref=e199]:
+              - generic [ref=e203]:
+                - generic [ref=e204]:
+                  - generic [ref=e205]: Veg Ram pulao (without gatta) with 2 eggs scrambled
+                  - generic [ref=e206]: 580 kcal | 22.5g protein
+                - generic [ref=e207]:
+                  - generic [ref=e208]: 04:35 PM
+                  - button "edit" [ref=e209] [cursor=pointer]
+                  - button "delete" [ref=e210] [cursor=pointer]
+            - listitem:
+              - generic: 5m
+            - listitem [ref=e211]:
+              - generic [ref=e215]:
+                - generic [ref=e216]:
+                  - generic [ref=e217]: Barnala murgh tikka 6 pcs boneless
+                  - generic [ref=e218]: 320 kcal | 38.5g protein
+                - generic [ref=e219]:
+                  - generic [ref=e220]: 04:30 PM
+                  - button "edit" [ref=e221] [cursor=pointer]
+                  - button "delete" [ref=e222] [cursor=pointer]
+            - listitem:
+              - generic: 45m
+            - listitem [ref=e223]:
+              - generic [ref=e227]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]: 1 mango
+                  - generic [ref=e230]: 202 kcal | 2.6g protein
+                - generic [ref=e231]:
+                  - generic [ref=e232]: 03:46 PM
+                  - button "edit" [ref=e233] [cursor=pointer]
+                  - button "delete" [ref=e234] [cursor=pointer]
+            - listitem:
+              - generic: 36m
+            - listitem [ref=e235]:
+              - generic [ref=e239]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: 1 yellaki banana
+                  - generic [ref=e242]: 70 kcal | 1.1g protein
+                - generic [ref=e243]:
+                  - generic [ref=e244]: 03:09 PM
+                  - button "edit" [ref=e245] [cursor=pointer]
+                  - button "delete" [ref=e246] [cursor=pointer]
+            - listitem:
+              - generic: 13h 29m
+            - listitem [ref=e247]:
+              - generic [ref=e251]:
+                - generic [ref=e252]:
+                  - generic [ref=e253]: 1 yelakki banana
+                  - generic [ref=e254]: 60 kcal | 0.8g protein
+                - generic [ref=e255]:
+                  - generic [ref=e256]: 01:41 AM
+                  - button "edit" [ref=e257] [cursor=pointer]
+                  - button "delete" [ref=e258] [cursor=pointer]
+            - listitem:
+              - generic: 1h 40m
+            - listitem [ref=e259]:
+              - generic [ref=e263]:
+                - generic [ref=e264]:
+                  - generic [ref=e265]: Home made kadai paneer with malai used as cream and 2 ajwain paratha with light ghee
+                  - generic [ref=e266]: 850 kcal | 24.5g protein
+                - generic [ref=e267]:
+                  - generic [ref=e268]: 12:01 AM
+                  - button "edit" [ref=e269] [cursor=pointer]
+                  - button "delete" [ref=e270] [cursor=pointer]
+        - generic [ref=e144]:
+          - paragraph [ref=e145]: Hydration
+          - list [ref=e147]:
+            - listitem [ref=e271]:
+              - generic [ref=e274]:
+                - generic [ref=e275]: 0.3L
+                - generic [ref=e276]:
+                  - generic [ref=e277]: 05:58 PM
+                  - button "edit" [ref=e278] [cursor=pointer]
+                  - button "delete" [ref=e279] [cursor=pointer]
+            - listitem:
+              - generic:
+                - generic: Monday, July 13, 2026
+            - listitem [ref=e280]:
+              - generic [ref=e283]:
+                - generic [ref=e284]: 2L
+                - generic [ref=e285]:
+                  - generic [ref=e286]: 03:10 PM
+                  - button "edit" [ref=e287] [cursor=pointer]
+                  - button "delete" [ref=e288] [cursor=pointer]
+            - listitem:
+              - generic: 13h 30m
+            - listitem [ref=e289]:
+              - generic [ref=e292]:
+                - generic [ref=e293]: 1L
+                - generic [ref=e294]:
+                  - generic [ref=e295]: 01:41 AM
+                  - button "edit" [ref=e296] [cursor=pointer]
+                  - button "delete" [ref=e297] [cursor=pointer]
