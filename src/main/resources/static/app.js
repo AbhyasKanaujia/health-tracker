@@ -276,14 +276,14 @@ function renderBarChart(chartId, labelsId, days, valueKey, activeColor, emptyCol
 function mealReadView(entry) {
   const safeName = entry.name.replace(/'/g, "\\'");
   return `
-    <li class="flex items-start" data-id="${entry.id}">
+    <li class="flex items-start min-w-0" data-id="${entry.id}">
       <div class="shrink-0 w-5 flex justify-center pt-[14px]">
         <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-sm"></div>
       </div>
-      <div class="flex-1 bg-white rounded-xl px-4 py-3 shadow-sm border border-stone-100">
+      <div class="flex-1 min-w-0 bg-white rounded-xl px-4 py-3 shadow-sm border border-stone-100">
         <div class="flex justify-between items-start gap-2">
           <div class="min-w-0">
-            <div class="font-medium text-sm text-stone-900 truncate">${entry.name}</div>
+            <div class="font-medium text-sm text-stone-900 break-words">${entry.name}</div>
             <div class="text-xs text-stone-400 mt-0.5">
               <span class="text-orange-500 font-medium">${entry.calories} kcal</span>
               <span class="mx-1.5 text-stone-200">·</span>
