@@ -173,7 +173,7 @@ function renderMealFeed(entries, listId, lineId, isRecent) {
     return;
   }
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = new Date().toLocaleDateString('en-CA');
   const firstDate = entries[0].eatenAt.split('T')[0];
   let html = firstDate === todayStr ? todayHeader() : dateSeparator(firstDate);
   entries.forEach((entry, i) => {
@@ -201,7 +201,7 @@ function renderWaterFeed(entries, listId, lineId, isRecent) {
     return;
   }
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = new Date().toLocaleDateString('en-CA');
   const firstDate = entries[0].loggedAt.split('T')[0];
   let html = firstDate === todayStr ? todayHeader() : dateSeparator(firstDate);
   entries.forEach((entry, i) => {
@@ -308,7 +308,7 @@ function mealReadView(entry) {
 
 function mealEditView(id, name, calories, protein, eatenAt) {
   const timeVal = eatenAt ? extractHHMM(eatenAt) : currentHHMM();
-  const dateVal = eatenAt ? eatenAt.split('T')[0] : new Date().toISOString().split('T')[0];
+  const dateVal = eatenAt ? eatenAt.split('T')[0] : new Date().toLocaleDateString('en-CA');
   return `
     <li class="bg-white rounded-xl px-4 py-3 space-y-2 shadow-sm border border-emerald-200" data-id="${id}">
       <div class="flex gap-2">
@@ -364,7 +364,7 @@ function waterReadView(entry) {
 
 function waterEditView(id, amount, loggedAt) {
   const timeVal = loggedAt ? extractHHMM(loggedAt) : currentHHMM();
-  const dateVal = loggedAt ? loggedAt.split('T')[0] : new Date().toISOString().split('T')[0];
+  const dateVal = loggedAt ? loggedAt.split('T')[0] : new Date().toLocaleDateString('en-CA');
   return `
     <li class="bg-white rounded-xl px-4 py-3 space-y-2 shadow-sm border border-emerald-200" data-id="${id}">
       <input id="edit-water-${id}" value="${amount}" type="number" step="0.1"
@@ -468,7 +468,7 @@ document.getElementById('meal-form').addEventListener('submit', async (e) => {
   const protein  = parseFloat(document.getElementById('meal-protein').value);
   if (!name || !calories) return;
   const timeVal = document.getElementById('meal-time').value;
-  const dateVal = document.getElementById('meal-date').value || new Date().toISOString().split('T')[0];
+  const dateVal = document.getElementById('meal-date').value || new Date().toLocaleDateString('en-CA');
   const eatenAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
   await api.post('/api/meals', { name, calories, proteinGrams: protein || 0, eatenAt });
   e.target.reset();
@@ -481,7 +481,7 @@ document.getElementById('water-form').addEventListener('submit', async (e) => {
   const amount = parseFloat(document.getElementById('water-amount').value);
   if (!amount) return;
   const timeVal  = document.getElementById('water-time').value;
-  const dateVal  = document.getElementById('water-date').value || new Date().toISOString().split('T')[0];
+  const dateVal  = document.getElementById('water-date').value || new Date().toLocaleDateString('en-CA');
   const loggedAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
   await api.post('/api/hydration', { amountLitres: amount, loggedAt });
   e.target.reset();
@@ -642,7 +642,7 @@ function buildDateTime(dateStr, timeHHMM) {
 
 function resetFormTimes() {
   const t = currentHHMM();
-  const d = new Date().toISOString().split('T')[0];
+  const d = new Date().toLocaleDateString('en-CA');
   ['meal-time', 'water-time'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = t;
