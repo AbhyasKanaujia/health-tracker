@@ -429,18 +429,21 @@ document.getElementById('meal-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = document.getElementById('meal-name').value.trim();
   if (!name) return;
-  const btn = e.target.querySelector('button[type="submit"]');
+  const btn = document.getElementById('log-meal-btn');
   btn.disabled = true;
   btn.textContent = 'Logging…';
   const timeVal = document.getElementById('meal-time').value;
   const dateVal = document.getElementById('meal-date').value || new Date().toLocaleDateString('en-CA');
   const eatenAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
-  await api.post('/api/meals', { name, calories: 0, proteinGrams: 0, eatenAt });
-  e.target.reset();
-  btn.disabled = false;
-  btn.textContent = 'Log Meal';
-  resetFormTimes();
-  refreshAll();
+  try {
+    await api.post('/api/meals', { name, eatenAt });
+    e.target.reset();
+    resetFormTimes();
+    refreshAll();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Log Meal';
+  }
 });
 
 document.getElementById('water-form').addEventListener('submit', async (e) => {
