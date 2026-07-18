@@ -17,13 +17,23 @@ import java.util.List;
 public class FoodEntryService {
 
     private final FoodEntryRepository repository;
+    private final MealAnalyzerService analyzerService;
 
     public FoodEntry log(User user, FoodEntryRequest request) {
+        int calories = request.calories();
+        double protein = request.proteinGrams();
+        if (calories == 0) {
+            try {
+                NutritionEstimate est = analyzerService.estimate(request.name());
+                calories = est.calories();
+                protein = est.proteinGrams();
+            } catch (Exception ignored) {}
+        }
         FoodEntry entry = FoodEntry.builder()
                 .user(user)
                 .name(request.name())
-                .calories(request.calories())
-                .proteinGrams(request.proteinGrams())
+                .calories(calories)
+                .proteinGrams(protein)
                 .eatenAt(request.eatenAt() != null ? request.eatenAt() : LocalDateTime.now())
                 .build();
         return repository.save(entry);
