@@ -419,14 +419,26 @@ async function runAnalyze(nameId, calId, protId, btn) {
   }
 }
 
-async function handleAnalyze() {
+async function autoAnalyze() {
+  const name = document.getElementById('meal-name').value.trim();
+  if (name.length < 3) return;
   const calSpinner  = document.getElementById('cal-spinner');
   const protSpinner = document.getElementById('prot-spinner');
+  const nameSpinner = document.getElementById('name-spinner');
   calSpinner.classList.remove('hidden');
   protSpinner.classList.remove('hidden');
-  await runAnalyze('meal-name', 'meal-calories', 'meal-protein', document.getElementById('analyze-btn'));
+  nameSpinner.classList.remove('hidden');
+  const fakeBtn = { disabled: false, textContent: '' };
+  await runAnalyze('meal-name', 'meal-calories', 'meal-protein', fakeBtn);
   calSpinner.classList.add('hidden');
   protSpinner.classList.add('hidden');
+  nameSpinner.classList.add('hidden');
+}
+
+let _analyzeTimer = null;
+function scheduleAutoAnalyze() {
+  clearTimeout(_analyzeTimer);
+  _analyzeTimer = setTimeout(autoAnalyze, 700);
 }
 
 function handleAnalyzeEdit(id, btn) {
@@ -643,6 +655,14 @@ function formatDateShort(dateStr) {
   const d = new Date(String(dateStr) + 'T12:00:00');
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
+
+// ── Auto-analyze wiring ───────────────────────────────────────────────────────
+
+document.getElementById('meal-name').addEventListener('input', scheduleAutoAnalyze);
+document.getElementById('meal-name').addEventListener('blur', () => {
+  clearTimeout(_analyzeTimer);
+  autoAnalyze();
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
