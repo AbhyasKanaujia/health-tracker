@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -64,5 +66,25 @@ public class FoodEntryService {
 
     public DailyMealSummary todaySummary(User user) {
         return summaryForDate(user, LocalDate.now());
+    }
+
+    public static final int SESSION_GAP_HOURS = 10;
+
+    public DailyMealSummary currentSessionSummary(User user) {
+        List<FoodEntry> all = repository.findByUserOrderByEatenAtDesc(user);
+        if (all.isEmpty()) return new DailyMealSummary(List.of(), 0, 0.0);
+        if (Duration.between(all.get(0).getEatenAt(), LocalDateTime.now()).toHours() >= SESSION_GAP_HOURS) {
+            return new DailyMealSummary(List.of(), 0, 0.0);
+        }
+        List<FoodEntry> session = new ArrayList<>();
+        session.add(all.get(0));
+        for (int i = 1; i < all.size(); i++) {
+            Duration gap = Duration.between(all.get(i).getEatenAt(), all.get(i - 1).getEatenAt());
+            if (gap.toHours() >= SESSION_GAP_HOURS) break;
+            session.add(all.get(i));
+        }
+        int totalCalories = session.stream().mapToInt(FoodEntry::getCalories).sum();
+        double totalProtein = session.stream().mapToDouble(FoodEntry::getProteinGrams).sum();
+        return new DailyMealSummary(session, totalCalories, totalProtein);
     }
 }

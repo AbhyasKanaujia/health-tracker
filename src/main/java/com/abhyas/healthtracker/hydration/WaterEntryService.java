@@ -1,13 +1,16 @@
 package com.abhyas.healthtracker.hydration;
 
+import com.abhyas.healthtracker.meal.FoodEntryService;
 import com.abhyas.healthtracker.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,6 +65,23 @@ public class WaterEntryService {
 
     public DailyHydrationSummary todaySummary(User user) {
         return summaryForDate(user, LocalDate.now());
+    }
+
+    public DailyHydrationSummary currentSessionSummary(User user) {
+        List<WaterEntry> all = repository.findByUserOrderByLoggedAtDesc(user);
+        if (all.isEmpty()) return new DailyHydrationSummary(List.of(), 0.0);
+        if (Duration.between(all.get(0).getLoggedAt(), LocalDateTime.now()).toHours() >= FoodEntryService.SESSION_GAP_HOURS) {
+            return new DailyHydrationSummary(List.of(), 0.0);
+        }
+        List<WaterEntry> session = new ArrayList<>();
+        session.add(all.get(0));
+        for (int i = 1; i < all.size(); i++) {
+            Duration gap = Duration.between(all.get(i).getLoggedAt(), all.get(i - 1).getLoggedAt());
+            if (gap.toHours() >= FoodEntryService.SESSION_GAP_HOURS) break;
+            session.add(all.get(i));
+        }
+        double totalLitres = session.stream().mapToDouble(WaterEntry::getAmountLitres).sum();
+        return new DailyHydrationSummary(session, totalLitres);
     }
 
     public HydrationInsights insights(User user, int days) {

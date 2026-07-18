@@ -9,4 +9,5 @@ import java.util.List;
 public interface WaterEntryRepository extends JpaRepository<WaterEntry, Long> {
     List<WaterEntry> findByUserAndLoggedAtBetween(User user, LocalDateTime start, LocalDateTime end);
     List<WaterEntry> findByUser(User user);
+    List<WaterEntry> findByUserOrderByLoggedAtDesc(User user);
 }

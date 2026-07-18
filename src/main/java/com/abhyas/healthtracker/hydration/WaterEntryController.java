@@ -37,6 +37,12 @@ public class WaterEntryController {
         return service.todaySummary(user);
     }
 
+    @GetMapping("/current-session")
+    public DailyHydrationSummary currentSession(HttpServletRequest request) {
+        User user = userResolver.resolve(request);
+        return service.currentSessionSummary(user);
+    }
+
     @GetMapping("/day/{date}")
     public DailyHydrationSummary day(HttpServletRequest request, @PathVariable String date) {
         User user = userResolver.resolve(request);

@@ -40,6 +40,12 @@ public class FoodEntryController {
         return service.todaySummary(user);
     }
 
+    @GetMapping("/current-session")
+    public DailyMealSummary currentSession(HttpServletRequest request) {
+        User user = userResolver.resolve(request);
+        return service.currentSessionSummary(user);
+    }
+
     @GetMapping("/day/{date}")
     public DailyMealSummary day(HttpServletRequest request, @PathVariable String date) {
         User user = userResolver.resolve(request);

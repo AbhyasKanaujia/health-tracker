@@ -1,24 +1,6 @@
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const GOALS = { calories: 2000, protein: 100, water: 2.5 };
-const SESSION_GAP_HOURS = 10;
-
-// Walk backwards from most recent entry; stop when gap between consecutive
-// entries exceeds SESSION_GAP_HOURS (a night's sleep / fasting window).
-// Also returns empty if the most recent entry itself is older than SESSION_GAP_HOURS
-// (meaning a new session has started with nothing logged yet).
-function filterCurrentSession(entries, timeField) {
-  if (entries.length === 0) return [];
-  const msSinceLastEntry = Date.now() - new Date(entries[0][timeField]).getTime();
-  if (msSinceLastEntry / 3600000 >= SESSION_GAP_HOURS) return [];
-  const result = [entries[0]];
-  for (let i = 1; i < entries.length; i++) {
-    const gapMs = new Date(entries[i - 1][timeField]) - new Date(entries[i][timeField]);
-    if (gapMs / 3600000 >= SESSION_GAP_HOURS) break;
-    result.push(entries[i]);
-  }
-  return result;
-}
 
 const ICON_EDIT = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
 const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
@@ -115,28 +97,20 @@ const api = {
 // ── Feed (last 10 hours) ──────────────────────────────────────────────────────
 
 async function refreshFeed() {
-  const [meals, water, mealToday, waterToday] = await Promise.all([
-    api.get('/api/meals'),
-    api.get('/api/hydration'),
-    api.get('/api/meals/today'),
-    api.get('/api/hydration/today'),
+  const [mealSession, waterSession] = await Promise.all([
+    api.get('/api/meals/current-session'),
+    api.get('/api/hydration/current-session'),
   ]);
 
-  // Stats
-  document.getElementById('stat-calories').textContent = mealToday.totalCalories;
-  document.getElementById('stat-protein').textContent  = mealToday.totalProteinGrams.toFixed(1);
-  document.getElementById('stat-water').textContent    = waterToday.totalLitres.toFixed(1);
-  document.getElementById('progress-calories').style.width = Math.min(100, (mealToday.totalCalories / GOALS.calories) * 100) + '%';
-  document.getElementById('progress-protein').style.width  = Math.min(100, (mealToday.totalProteinGrams / GOALS.protein) * 100) + '%';
-  document.getElementById('progress-water').style.width    = Math.min(100, (waterToday.totalLitres / GOALS.water) * 100) + '%';
+  document.getElementById('stat-calories').textContent = mealSession.totalCalories;
+  document.getElementById('stat-protein').textContent  = mealSession.totalProteinGrams.toFixed(1);
+  document.getElementById('stat-water').textContent    = waterSession.totalLitres.toFixed(1);
+  document.getElementById('progress-calories').style.width = Math.min(100, (mealSession.totalCalories / GOALS.calories) * 100) + '%';
+  document.getElementById('progress-protein').style.width  = Math.min(100, (mealSession.totalProteinGrams / GOALS.protein) * 100) + '%';
+  document.getElementById('progress-water').style.width    = Math.min(100, (waterSession.totalLitres / GOALS.water) * 100) + '%';
 
-  const allMeals = meals.slice().sort((a, b) => new Date(b.eatenAt)  - new Date(a.eatenAt));
-  const allWater = water.slice().sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt));
-  const recentMeals = filterCurrentSession(allMeals, 'eatenAt');
-  const recentWater = filterCurrentSession(allWater, 'loggedAt');
-
-  renderMealFeed(recentMeals, 'meal-feed', 'meal-timeline-line', true);
-  renderWaterFeed(recentWater, 'water-feed', 'water-timeline-line', true);
+  renderMealFeed(mealSession.entries, 'meal-feed', 'meal-timeline-line', true);
+  renderWaterFeed(waterSession.entries, 'water-feed', 'water-timeline-line', true);
 }
 
 // ── History (all entries) ─────────────────────────────────────────────────────
