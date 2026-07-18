@@ -25,15 +25,6 @@ public class FoodEntryController {
     @ResponseStatus(HttpStatus.CREATED)
     public FoodEntry log(HttpServletRequest request, @RequestBody FoodEntryRequest body) {
         User user = userResolver.resolve(request);
-        if (body.calories() == 0) {
-            NutritionEstimate est;
-            try {
-                est = analyzerService.estimate(body.name());
-            } catch (Exception e) {
-                est = new NutritionEstimate(0, 0.0);
-            }
-            return service.log(user, new FoodEntryRequest(body.name(), est.calories(), est.proteinGrams(), body.eatenAt()));
-        }
         return service.log(user, body);
     }
 

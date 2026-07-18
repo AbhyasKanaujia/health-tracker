@@ -419,6 +419,28 @@ async function runAnalyze(nameId, calId, protId, btn) {
   }
 }
 
+async function autoAnalyze() {
+  const name = document.getElementById('meal-name').value.trim();
+  if (name.length < 3) return;
+  const calSpinner  = document.getElementById('cal-spinner');
+  const protSpinner = document.getElementById('prot-spinner');
+  const nameSpinner = document.getElementById('name-spinner');
+  calSpinner.classList.remove('hidden');
+  protSpinner.classList.remove('hidden');
+  nameSpinner.classList.remove('hidden');
+  const fakeBtn = { disabled: false, textContent: '' };
+  await runAnalyze('meal-name', 'meal-calories', 'meal-protein', fakeBtn);
+  calSpinner.classList.add('hidden');
+  protSpinner.classList.add('hidden');
+  nameSpinner.classList.add('hidden');
+}
+
+let _analyzeTimer = null;
+function scheduleAutoAnalyze() {
+  clearTimeout(_analyzeTimer);
+  _analyzeTimer = setTimeout(autoAnalyze, 700);
+}
+
 function handleAnalyzeEdit(id, btn) {
   runAnalyze(`edit-meal-name-${id}`, `edit-meal-cal-${id}`, `edit-meal-prot-${id}`, btn);
 }
@@ -427,23 +449,17 @@ function handleAnalyzeEdit(id, btn) {
 
 document.getElementById('meal-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name = document.getElementById('meal-name').value.trim();
-  if (!name) return;
-  const btn = document.getElementById('log-meal-btn');
-  btn.disabled = true;
-  btn.textContent = 'Logging…';
+  const name     = document.getElementById('meal-name').value.trim();
+  const calories = parseInt(document.getElementById('meal-calories').value);
+  const protein  = parseFloat(document.getElementById('meal-protein').value);
+  if (!name || !calories) return;
   const timeVal = document.getElementById('meal-time').value;
   const dateVal = document.getElementById('meal-date').value || new Date().toLocaleDateString('en-CA');
   const eatenAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
-  try {
-    await api.post('/api/meals', { name, eatenAt });
-    e.target.reset();
-    resetFormTimes();
-    refreshAll();
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Log Meal';
-  }
+  await api.post('/api/meals', { name, calories, proteinGrams: protein || 0, eatenAt });
+  e.target.reset();
+  resetFormTimes();
+  refreshAll();
 });
 
 document.getElementById('water-form').addEventListener('submit', async (e) => {
@@ -639,6 +655,14 @@ function formatDateShort(dateStr) {
   const d = new Date(String(dateStr) + 'T12:00:00');
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
+
+// ── Auto-analyze wiring ───────────────────────────────────────────────────────
+
+document.getElementById('meal-name').addEventListener('input', scheduleAutoAnalyze);
+document.getElementById('meal-name').addEventListener('blur', () => {
+  clearTimeout(_analyzeTimer);
+  autoAnalyze();
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
