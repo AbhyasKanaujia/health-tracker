@@ -148,18 +148,24 @@ function renderMealFeed(entries, listId, lineId, isRecent) {
   }
 
   const todayStr = new Date().toLocaleDateString('en-CA');
-  const firstDate = entries[0].eatenAt.split('T')[0];
-  let html = firstDate === todayStr ? todayHeader() : dateSeparator(firstDate);
-  entries.forEach((entry, i) => {
-    if (i > 0) {
-      const prevDate = entries[i - 1].eatenAt.split('T')[0];
-      const currDate = entry.eatenAt.split('T')[0];
-      const mins = (new Date(entries[i - 1].eatenAt) - new Date(entry.eatenAt)) / 60000;
+  const groups = groupMealEntries(entries);
+  let html = '';
+  let prevDate = null;
+
+  groups.forEach((group, gi) => {
+    const currDate = group[0].eatenAt.split('T')[0];
+    if (gi === 0) {
+      html += currDate === todayStr ? todayHeader() : dateSeparator(currDate);
+    } else {
+      const prevGroup = groups[gi - 1];
+      const mins = (new Date(prevGroup[prevGroup.length - 1].eatenAt) - new Date(group[0].eatenAt)) / 60000;
       html += mealGapView(mins);
       if (prevDate !== currDate) html += dateSeparator(currDate);
     }
-    html += mealReadView(entry);
+    prevDate = currDate;
+    html += group.length === 1 ? mealReadView(group[0]) : mealGroupView(group);
   });
+
   list.innerHTML = html;
   setColumnGradient(lineId, entries, 'eatenAt');
 }
@@ -280,6 +286,89 @@ function mealReadView(entry) {
     </li>`;
 }
 
+function mealGroupView(group) {
+  const totalCal  = group.reduce((s, e) => s + e.calories, 0);
+  const totalProt = group.reduce((s, e) => s + e.proteinGrams, 0);
+  const rows = group.map(entry => {
+    const safeName = entry.name.replace(/'/g, "\\'");
+    return `
+      <div class="py-2.5 border-b border-stone-100 last:border-0" data-id="${entry.id}" data-grouped="true">
+        <div class="flex justify-between items-start gap-2">
+          <div class="min-w-0">
+            <div class="font-medium text-sm text-stone-900 break-words">${entry.name}</div>
+            <div class="text-xs text-stone-400 mt-0.5">
+              <span class="text-orange-500 font-medium">${entry.calories} kcal</span>
+              <span class="mx-1.5 text-stone-200">·</span>
+              <span class="text-violet-500 font-medium">${entry.proteinGrams}g protein</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <span class="text-[11px] text-stone-400 mr-1">${formatTime(entry.eatenAt)}</span>
+            <button onclick="showMealEdit(${entry.id}, '${safeName}', ${entry.calories}, ${entry.proteinGrams}, '${entry.eatenAt}')"
+              class="p-1.5 text-stone-300 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition" title="Edit">
+              ${ICON_EDIT}
+            </button>
+            <button onclick="handleDeleteMeal(${entry.id})"
+              class="p-1.5 text-stone-300 hover:text-red-400 hover:bg-red-50 rounded-lg transition" title="Delete">
+              ${ICON_TRASH}
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `
+    <li class="flex items-start min-w-0">
+      <div class="shrink-0 w-5 flex justify-center pt-[14px]">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white shadow-sm"></div>
+      </div>
+      <div class="flex-1 min-w-0 bg-white rounded-xl px-4 pt-1 pb-2 shadow-sm border border-stone-100">
+        ${rows}
+        <div class="pt-2 mt-0.5 flex gap-2 items-center">
+          <span class="text-xs font-semibold text-orange-500">${totalCal} kcal</span>
+          <span class="text-stone-200 text-xs">·</span>
+          <span class="text-xs font-semibold text-violet-500">${totalProt.toFixed(1)}g protein</span>
+          <span class="ml-auto text-[10px] text-stone-300 uppercase tracking-wide">combined</span>
+        </div>
+      </div>
+    </li>`;
+}
+
+function mealInlineEditView(id, name, calories, protein, eatenAt) {
+  const timeVal = eatenAt ? extractHHMM(eatenAt) : currentHHMM();
+  const dateVal = eatenAt ? eatenAt.split('T')[0] : new Date().toLocaleDateString('en-CA');
+  return `
+    <div class="py-2.5 space-y-2 border-b border-stone-100 last:border-0" data-id="${id}" data-grouped="true">
+      <div class="flex gap-2">
+        <input id="edit-meal-name-${id}" value="${name}" type="text"
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+        <button type="button" onclick="handleAnalyzeEdit(${id}, this)"
+          class="px-3 py-1 bg-stone-100 hover:bg-stone-200 text-xs text-stone-600 font-medium rounded-lg transition whitespace-nowrap">
+          Analyze
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <input id="edit-meal-cal-${id}"  value="${calories}" type="number"
+          class="bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+        <input id="edit-meal-prot-${id}" value="${protein}"  type="number" step="0.1"
+          class="bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-stone-400 shrink-0">eaten at</span>
+        <input id="edit-meal-date-${id}" value="${dateVal}" type="date"
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+        <input id="edit-meal-time-${id}" value="${timeVal}" type="time"
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+      </div>
+      <div class="flex gap-2">
+        <button onclick="handleUpdateMeal(${id})"
+          class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded-lg font-medium transition">Save</button>
+        <button onclick="refreshFeed()"
+          class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs py-1.5 rounded-lg font-medium transition">Cancel</button>
+      </div>
+    </div>`;
+}
+
 function mealEditView(id, name, calories, protein, eatenAt) {
   const timeVal = eatenAt ? extractHHMM(eatenAt) : currentHHMM();
   const dateVal = eatenAt ? eatenAt.split('T')[0] : new Date().toLocaleDateString('en-CA');
@@ -301,11 +390,13 @@ function mealEditView(id, name, calories, protein, eatenAt) {
       </div>
       <div class="flex items-center gap-2">
         <span class="text-xs text-stone-400 shrink-0">eaten at</span>
+        <input id="edit-meal-date-${id}" value="${dateVal}" type="date"
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
         <input id="edit-meal-time-${id}" value="${timeVal}" type="time"
           class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
       </div>
       <div class="flex gap-2">
-        <button onclick="handleUpdateMeal(${id}, '${dateVal}')"
+        <button onclick="handleUpdateMeal(${id})"
           class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded-lg font-medium transition">Save</button>
         <button onclick="refreshFeed()"
           class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs py-1.5 rounded-lg font-medium transition">Cancel</button>
@@ -345,11 +436,13 @@ function waterEditView(id, amount, loggedAt) {
         class="w-full bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
       <div class="flex items-center gap-2">
         <span class="text-xs text-stone-400 shrink-0">had at</span>
+        <input id="edit-water-date-${id}" value="${dateVal}" type="date"
+          class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
         <input id="edit-water-time-${id}" value="${timeVal}" type="time"
           class="flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
       </div>
       <div class="flex gap-2">
-        <button onclick="handleUpdateWater(${id}, '${dateVal}')"
+        <button onclick="handleUpdateWater(${id})"
           class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-1.5 rounded-lg font-medium transition">Save</button>
         <button onclick="refreshFeed()"
           class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs py-1.5 rounded-lg font-medium transition">Cancel</button>
@@ -361,7 +454,10 @@ function waterEditView(id, amount, loggedAt) {
 
 function showMealEdit(id, name, calories, protein, eatenAt) {
   const el = document.querySelector(`[data-id="${id}"]`);
-  if (el) el.outerHTML = mealEditView(id, name, calories, protein, eatenAt);
+  if (!el) return;
+  el.outerHTML = el.dataset.grouped
+    ? mealInlineEditView(id, name, calories, protein, eatenAt)
+    : mealEditView(id, name, calories, protein, eatenAt);
 }
 
 function showWaterEdit(id, amount, loggedAt) {
@@ -369,13 +465,14 @@ function showWaterEdit(id, amount, loggedAt) {
   if (el) el.outerHTML = waterEditView(id, amount, loggedAt);
 }
 
-async function handleUpdateMeal(id, dateVal) {
+async function handleUpdateMeal(id) {
   const name     = document.getElementById(`edit-meal-name-${id}`).value.trim();
   const calories = parseInt(document.getElementById(`edit-meal-cal-${id}`).value);
   const protein  = parseFloat(document.getElementById(`edit-meal-prot-${id}`).value);
   if (!name || !calories) return;
+  const dateVal = document.getElementById(`edit-meal-date-${id}`).value;
   const timeVal = document.getElementById(`edit-meal-time-${id}`).value;
-  const eatenAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
+  const eatenAt = dateVal && timeVal ? buildDateTime(dateVal, timeVal) : null;
   await api.put(`/api/meals/${id}`, { name, calories, proteinGrams: protein || 0, eatenAt });
   refreshAll();
 }
@@ -385,11 +482,12 @@ async function handleDeleteMeal(id) {
   refreshAll();
 }
 
-async function handleUpdateWater(id, dateVal) {
+async function handleUpdateWater(id) {
   const amount = parseFloat(document.getElementById(`edit-water-${id}`).value);
   if (!amount) return;
+  const dateVal = document.getElementById(`edit-water-date-${id}`).value;
   const timeVal = document.getElementById(`edit-water-time-${id}`).value;
-  const loggedAt = timeVal ? buildDateTime(dateVal, timeVal) : null;
+  const loggedAt = dateVal && timeVal ? buildDateTime(dateVal, timeVal) : null;
   await api.put(`/api/hydration/${id}`, { amountLitres: amount, loggedAt });
   refreshAll();
 }
@@ -500,6 +598,7 @@ function timeOfDayColor(isoString) {
 
 const MEAL_SNAP_MINS  = 5;
 const WATER_SNAP_MINS = 3;
+const MEAL_GROUP_MINS = 15;
 
 function gapHeight(mins) {
   return Math.round(Math.min(88, Math.max(24, mins * 0.5)));
@@ -530,6 +629,28 @@ function mealGapView(mins) {
 function waterGapView(mins) {
   if (mins < WATER_SNAP_MINS) return '';
   return renderGapItem(mins);
+}
+
+// ── Meal grouping ─────────────────────────────────────────────────────────────
+
+function groupMealEntries(entries) {
+  const groups = [];
+  let current = [];
+  entries.forEach((entry, i) => {
+    if (i === 0) {
+      current.push(entry);
+    } else {
+      const mins = (new Date(entries[i - 1].eatenAt) - new Date(entry.eatenAt)) / 60000;
+      if (mins <= MEAL_GROUP_MINS) {
+        current.push(entry);
+      } else {
+        groups.push(current);
+        current = [entry];
+      }
+    }
+  });
+  if (current.length > 0) groups.push(current);
+  return groups;
 }
 
 // ── Column gradient ───────────────────────────────────────────────────────────
