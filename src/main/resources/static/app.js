@@ -97,20 +97,59 @@ const api = {
 // ── Feed (last 10 hours) ──────────────────────────────────────────────────────
 
 async function refreshFeed() {
-  const [mealSession, waterSession] = await Promise.all([
+  const [mealSession, waterToday] = await Promise.all([
     api.get('/api/meals/current-session'),
-    api.get('/api/hydration/current-session'),
+    api.get('/api/hydration/today'),
   ]);
 
   document.getElementById('stat-calories').textContent = mealSession.totalCalories;
   document.getElementById('stat-protein').textContent  = mealSession.totalProteinGrams.toFixed(1);
-  document.getElementById('stat-water').textContent    = waterSession.totalLitres.toFixed(1);
   document.getElementById('progress-calories').style.width = Math.min(100, (mealSession.totalCalories / GOALS.calories) * 100) + '%';
   document.getElementById('progress-protein').style.width  = Math.min(100, (mealSession.totalProteinGrams / GOALS.protein) * 100) + '%';
-  document.getElementById('progress-water').style.width    = Math.min(100, (waterSession.totalLitres / GOALS.water) * 100) + '%';
 
   renderMealFeed(mealSession.entries, 'meal-feed', 'meal-timeline-line', true);
-  renderWaterFeed(waterSession.entries, 'water-feed', 'water-timeline-line', true);
+  renderWaterOrbs(waterToday.totalLitres);
+}
+
+// ── Water orb row ────────────────────────────────────────────────────────────
+
+const ORB_LITRES = 0.25; // one orb = 250 mL
+
+function renderWaterOrbs(totalLitres) {
+  document.getElementById('water-total-label').textContent = totalLitres.toFixed(2) + ' L';
+
+  const orbCount = Math.ceil(GOALS.water / ORB_LITRES);
+  const row = document.getElementById('water-orb-row');
+  let remaining = totalLitres;
+
+  row.innerHTML = Array.from({ length: orbCount }, () => {
+    const pct = Math.max(0, Math.min(1, remaining / ORB_LITRES));
+    remaining -= ORB_LITRES;
+    return waterOrbSvg(pct);
+  }).join('');
+}
+
+function waterOrbSvg(pct) {
+  const size = 28;
+  const r = size / 2 - 1.5;
+  const cx = size / 2;
+  const cy = size / 2;
+  const waterY = cy + r - pct * (r * 2);
+  const clipId = 'orb-clip-' + Math.random().toString(36).slice(2, 9);
+
+  return `
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="shrink-0">
+      <defs>
+        <clipPath id="${clipId}">
+          <circle cx="${cx}" cy="${cy}" r="${r}" />
+        </clipPath>
+      </defs>
+      ${pct > 0 ? `
+      <g clip-path="url(#${clipId})">
+        <rect x="0" y="${waterY}" width="${size}" height="${size}" fill="#38bdf8" fill-opacity="0.65" />
+      </g>` : ''}
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#00000030" stroke-width="1.5" />
+    </svg>`;
 }
 
 // ── History (all entries) ─────────────────────────────────────────────────────
@@ -227,6 +266,61 @@ function renderInsights(mealIns, waterIns) {
 
   renderBarChart('chart-calories',  'chart-cal-labels',   mealIns.days,  'totalCalories', 'bg-orange-400', 'bg-stone-100');
   renderBarChart('chart-water',     'chart-water-labels', waterIns.days, 'totalLitres',   'bg-sky-400',    'bg-stone-100');
+  renderEatingWindowChart(mealIns.days);
+  document.getElementById('ins-avg-window').textContent =
+    mealIns.avgEatingWindowHours > 0 ? `${mealIns.avgEatingWindowHours.toFixed(1)}h` : '—';
+}
+
+function renderEatingWindowChart(days) {
+  const el = document.getElementById('chart-eating-window');
+  const logged = days.filter(d => d.eatingWindowStart);
+
+  if (logged.length === 0) {
+    el.innerHTML = '<div class="text-stone-400 text-sm py-6 text-center">No eating window data yet.</div>';
+    return;
+  }
+
+  const guidePcts = [6, 12, 18].map(h => (h / 24 * 100).toFixed(1));
+  const guideLines = guidePcts.map(pct =>
+    `<div class="absolute inset-y-0 border-l border-dashed border-stone-200" style="left:${pct}%"></div>`
+  ).join('');
+
+  const rows = logged.map(d => {
+    const [sh, sm] = d.eatingWindowStart.split(':').map(Number);
+    const [eh, em] = d.eatingWindowEnd.split(':').map(Number);
+    const startH   = sh + sm / 60;
+    const endH     = eh + em / 60;
+    const leftPct  = (startH / 24 * 100).toFixed(1);
+    const widthPct = Math.max((endH - startH) / 24 * 100, 0.8).toFixed(1);
+    const startColor = timeOfDayColor('2000-01-01T' + d.eatingWindowStart);
+    const endColor   = timeOfDayColor('2000-01-01T' + d.eatingWindowEnd);
+    const tipStart = formatTime('2000-01-01T' + d.eatingWindowStart);
+    const tipEnd   = formatTime('2000-01-01T' + d.eatingWindowEnd);
+    const label    = formatDateShort(d.date);
+    const dur      = d.eatingWindowHours < 0.1 ? '<1h' : `${d.eatingWindowHours.toFixed(1)}h`;
+    return `
+      <div class="flex items-center gap-2 h-6" title="${label}: ${tipStart}–${tipEnd} (${dur})">
+        <div class="w-8 text-[10px] text-stone-400 text-right shrink-0">${label}</div>
+        <div class="flex-1 relative h-3.5 rounded-full bg-stone-50">
+          ${guideLines}
+          <div class="absolute top-0 h-full rounded-full"
+               style="left:${leftPct}%;width:${widthPct}%;background:linear-gradient(to right,${startColor},${endColor});opacity:0.85"></div>
+        </div>
+      </div>`;
+  });
+
+  const axisRow = `
+    <div class="flex items-start gap-2 mt-2">
+      <div class="w-8 shrink-0"></div>
+      <div class="flex-1 relative h-4">
+        ${[0, 6, 12, 18, 24].map(h => {
+          const label = h === 0 || h === 24 ? '12am' : h === 6 ? '6am' : h === 12 ? '12pm' : '6pm';
+          return `<div class="absolute text-[10px] text-stone-300" style="left:${(h/24*100).toFixed(1)}%;transform:translateX(-50%)">${label}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+  el.innerHTML = rows.join('') + axisRow;
 }
 
 function renderBarChart(chartId, labelsId, days, valueKey, activeColor, emptyColor) {
@@ -432,7 +526,7 @@ function waterEditView(id, amount, loggedAt) {
   const dateVal = loggedAt ? loggedAt.split('T')[0] : new Date().toLocaleDateString('en-CA');
   return `
     <li class="bg-white rounded-xl px-4 py-3 space-y-2 shadow-sm border border-emerald-200" data-id="${id}">
-      <input id="edit-water-${id}" value="${amount}" type="number" step="0.1"
+      <input id="edit-water-${id}" value="${amount}" type="number" step="0.1" placeholder="Amount (L)"
         class="w-full bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
       <div class="flex items-center gap-2">
         <span class="text-xs text-stone-400 shrink-0">had at</span>

@@ -4,8 +4,11 @@ import com.abhyas.healthtracker.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +36,13 @@ public class MealInsightsService {
                     List<FoodEntry> dayEntries = byDate.getOrDefault(date, List.of());
                     int cal = dayEntries.stream().mapToInt(FoodEntry::getCalories).sum();
                     double prot = dayEntries.stream().mapToDouble(FoodEntry::getProteinGrams).sum();
-                    return new DailyStats(date, cal, prot, dayEntries.size());
+                    LocalTime winStart = dayEntries.isEmpty() ? null :
+                            dayEntries.stream().map(e -> e.getEatenAt().toLocalTime()).min(Comparator.naturalOrder()).orElse(null);
+                    LocalTime winEnd = dayEntries.isEmpty() ? null :
+                            dayEntries.stream().map(e -> e.getEatenAt().toLocalTime()).max(Comparator.naturalOrder()).orElse(null);
+                    double winHours = (winStart != null && winEnd != null) ?
+                            Duration.between(winStart, winEnd).toMinutes() / 60.0 : 0.0;
+                    return new DailyStats(date, cal, prot, dayEntries.size(), winStart, winEnd, winHours);
                 })
                 .toList();
 
@@ -45,7 +54,10 @@ public class MealInsightsService {
         double avgProtein = daysLogged > 0
                 ? loggedDays.stream().mapToDouble(DailyStats::totalProteinGrams).average().orElse(0)
                 : 0;
+        double avgWindow = daysLogged > 0
+                ? loggedDays.stream().mapToDouble(DailyStats::eatingWindowHours).average().orElse(0)
+                : 0;
 
-        return new DietInsights(avgCalories, avgProtein, daysLogged, dailyStats);
+        return new DietInsights(avgCalories, avgProtein, daysLogged, dailyStats, avgWindow);
     }
 }

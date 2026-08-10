@@ -40,7 +40,7 @@
     <div id="panel-feed">
 
       <!-- Stats -->
-      <div class="grid grid-cols-3 gap-3 mb-6">
+      <div class="grid grid-cols-2 gap-3 mb-6">
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
           <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Calories</div>
           <div id="stat-calories" class="text-2xl font-bold text-stone-900 leading-none mb-1">—</div>
@@ -57,90 +57,75 @@
             <div id="progress-protein" class="h-1 bg-violet-400 rounded-full transition-all duration-500" style="width:0%"></div>
           </div>
         </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-100">
-          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider mb-2">Water</div>
-          <div id="stat-water" class="text-2xl font-bold text-stone-900 leading-none mb-1">—</div>
-          <div class="text-[11px] text-stone-400 mb-3">of 2.5 L</div>
-          <div class="h-1 bg-stone-100 rounded-full overflow-hidden">
-            <div id="progress-water" class="h-1 bg-sky-400 rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+
+      <!-- Water card (full width) -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Water</div>
+          <div class="text-xs text-stone-400"><span id="water-total-label" class="text-stone-700 font-semibold">—</span> of 2.5 L</div>
+        </div>
+        <div id="water-orb-row" class="flex items-end gap-2 sm:gap-3 mb-5 overflow-x-auto pb-1"></div>
+        <form id="water-form" class="flex items-center gap-2">
+          <input id="water-amount" type="number" step="0.1" placeholder="Amount (L)"
+            class="w-32 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition" />
+          <input id="water-date" type="date"
+            class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition" />
+          <input id="water-time" type="time"
+            class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition" />
+          <button type="submit"
+            class="px-4 py-2 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white text-sm font-semibold rounded-xl transition whitespace-nowrap">
+            Log
+          </button>
+        </form>
+      </div>
+
+      <!-- Meal form -->
+      <form id="meal-form" class="bg-white rounded-2xl p-5 space-y-3 shadow-sm border border-stone-100 mb-8">
+        <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Log a Meal</div>
+        <div class="flex gap-2">
+          <input id="meal-name" type="text" placeholder="Food name"
+            class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+          <button type="button" onclick="handleAnalyze()" id="analyze-btn"
+            class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-xs text-stone-600 font-medium rounded-xl transition whitespace-nowrap">
+            Analyze
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="relative">
+            <input id="meal-calories" type="number" placeholder="Calories"
+              class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+            <div id="cal-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
+              <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
+            </div>
+          </div>
+          <div class="relative">
+            <input id="meal-protein" type="number" step="0.1" placeholder="Protein (g)"
+              class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+            <div id="prot-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
+              <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Log forms -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <form id="meal-form" class="bg-white rounded-2xl p-5 space-y-3 shadow-sm border border-stone-100">
-          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Log a Meal</div>
-          <div class="flex gap-2">
-            <input id="meal-name" type="text" placeholder="Food name"
-              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-            <button type="button" onclick="handleAnalyze()" id="analyze-btn"
-              class="px-3 py-2 bg-stone-100 hover:bg-stone-200 text-xs text-stone-600 font-medium rounded-xl transition whitespace-nowrap">
-              Analyze
-            </button>
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="relative">
-              <input id="meal-calories" type="number" placeholder="Calories"
-                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-              <div id="cal-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
-                <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
-              </div>
-            </div>
-            <div class="relative">
-              <input id="meal-protein" type="number" step="0.1" placeholder="Protein (g)"
-                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-              <div id="prot-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-stone-50 rounded-xl border border-stone-200">
-                <span class="text-xs text-stone-400 animate-pulse">analyzing…</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-stone-400 shrink-0">eaten at</span>
-            <input id="meal-date" type="date"
-              class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-            <input id="meal-time" type="time"
-              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-          </div>
-          <button type="submit"
-            class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold py-2.5 rounded-xl transition">
-            Log Meal
-          </button>
-        </form>
-
-        <form id="water-form" class="bg-white rounded-2xl p-5 flex flex-col gap-3 shadow-sm border border-stone-100">
-          <div class="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">Log Water</div>
-          <input id="water-amount" type="number" step="0.1" placeholder="Amount (litres)"
-            class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-stone-400 shrink-0">had at</span>
-            <input id="water-date" type="date"
-              class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-            <input id="water-time" type="time"
-              class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
-          </div>
-          <button type="submit"
-            class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold py-2.5 rounded-xl transition mt-auto">
-            Log Water
-          </button>
-        </form>
-      </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-stone-400 shrink-0">eaten at</span>
+          <input id="meal-date" type="date"
+            class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+          <input id="meal-time" type="time"
+            class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+        </div>
+        <button type="submit"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold py-2.5 rounded-xl transition">
+          Log Meal
+        </button>
+      </form>
 
       <!-- Recent timeline (last 10h) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Recent Meals</p>
-          <div class="relative">
-            <div id="meal-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
-            <ul id="meal-feed" class="relative" style="z-index:1"></ul>
-          </div>
-        </div>
-        <div>
-          <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Recent Hydration</p>
-          <div class="relative">
-            <div id="water-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
-            <ul id="water-feed" class="relative" style="z-index:1"></ul>
-          </div>
+      <div>
+        <p class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-4">Recent Meals</p>
+        <div class="relative">
+          <div id="meal-timeline-line" class="absolute inset-y-0 pointer-events-none" style="left:9px;width:2px;z-index:0;border-radius:2px"></div>
+          <ul id="meal-feed" class="relative" style="z-index:1"></ul>
         </div>
       </div>
     </div>
@@ -215,6 +200,16 @@
         </div>
       </div>
 
+      <div class="mb-10">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest">Eating Window</h3>
+          <span class="text-[11px] text-stone-400">avg <span id="ins-avg-window" class="text-stone-600 font-medium">—</span></span>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-100">
+          <div id="chart-eating-window" class="space-y-1.5"></div>
+        </div>
+      </div>
+
     </div>
 
   </main>
@@ -254,6 +249,6 @@
     </div>
   </nav>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>
